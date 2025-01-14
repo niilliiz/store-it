@@ -1,7 +1,6 @@
 {
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "extends": ["next/core-web-vitals", "next/typescript", "standard", "plugin:tailwindcss/recommended", "prettier" ],
   "rules": {
-    "prettier/prettier": "error"
+    "no-undef": "off"
   }
 }
