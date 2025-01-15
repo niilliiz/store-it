@@ -17,14 +17,20 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const formSchema = z.object({
-  fullName: z.string().min(2).max(50),
-  email: z.string().email(),
-});
+type formType = "sign-in" | "sign-up";
 
-type AuthForm = { type: "sign-in" | "sign-up" };
+const authFormSchema = (formType: formType) =>
+  z.object({
+    fullName:
+      formType === "sign-up"
+        ? z.string().min(2).max(50)
+        : z.string().optional(),
+    email: z.string().email(),
+  });
 
-export default function AuthForm({ type }: AuthForm) {
+export default function AuthForm({ type }: { type: formType }) {
+  const formSchema = authFormSchema(type);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,11 +47,11 @@ export default function AuthForm({ type }: AuthForm) {
   const [isLoading, setISLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const content = type === "sign-in" ? "Sign In" : "Sign Up";
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-
-  const content = type === "sign-in" ? "Sign In" : "Sign Up";
 
   return (
     <Form {...form}>
@@ -57,14 +63,16 @@ export default function AuthForm({ type }: AuthForm) {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="shad-form-label">Full Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your full name"
-                    className="shad-input"
-                    {...field}
-                  />
-                </FormControl>
+                <div className="shad-form-item">
+                  <FormLabel className="shad-form-label">Full Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your full name"
+                      className="shad-input"
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
 
                 <FormMessage className="shad-form-message  " />
               </FormItem>
@@ -77,14 +85,16 @@ export default function AuthForm({ type }: AuthForm) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form-label">Email</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your email"
-                  className="shad-input"
-                  {...field}
-                />
-              </FormControl>
+              <div className="shad-form-item">
+                <FormLabel className="shad-form-label">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your email"
+                    className="shad-input"
+                    {...field}
+                  />
+                </FormControl>
+              </div>
 
               <FormMessage className="shad-form-message  " />
             </FormItem>
@@ -107,6 +117,7 @@ export default function AuthForm({ type }: AuthForm) {
           )}
         </Button>
         {errorMessage && <p className="error-message">*{errorMessage}</p>}
+
         <div className="body-2 flex justify-center">
           <p className="text-light-100">
             {type === "sign-in"
