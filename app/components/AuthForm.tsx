@@ -48,7 +48,7 @@ export default function AuthForm({ type }: { type: formType }) {
 
   const [isLoading, setISLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState<string | null>(null);
+  const [accountId, setAccountId] = useState("");
 
   const content = type === "sign-in" ? "Sign In" : "Sign Up";
 
@@ -62,9 +62,10 @@ export default function AuthForm({ type }: { type: formType }) {
       });
 
       setAccountId(user.accountId);
-    } catch (err) {
+    } catch (error) {
       //todo: toast
-      setErrorMessage("Failed to create account. Please try again.", err);
+      console.error(error);
+      setErrorMessage("Failed to create account. Please try again.");
     } finally {
       setISLoading(false);
     }
@@ -149,7 +150,7 @@ export default function AuthForm({ type }: { type: formType }) {
           </Link>
         </div>
       </form>
-      {!accountId && (
+      {accountId && (
         <OTPModal email={form.getValues("email")} accountId={accountId} />
       )}
     </Form>

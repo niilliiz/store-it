@@ -17,7 +17,7 @@ import { appwriteConfig } from "@/lib/appWrite/config";
 import { avatarPlaceholderUrl } from "@/constants";
 import { createAdminClient, createSessionClient } from "@/lib/appWrite";
 
-const getUserByEmail = async (email: string) => {
+async function getUserByEmail(email: string) {
   const { databases } = await createAdminClient();
 
   const result = await databases.listDocuments(
@@ -27,12 +27,12 @@ const getUserByEmail = async (email: string) => {
   );
 
   return result.total > 0 ? result.documents[0] : null;
-};
+}
 
-const handleError = (error: unknown, message: string) => {
+function handleError(error: unknown, message: string) {
   console.log(error, message);
   throw error;
-};
+}
 
 export const sendEmailOTP = async ({ email }: { email: string }) => {
   const { account } = await createAdminClient();
@@ -46,13 +46,13 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
   }
 };
 
-export const createAccount = async ({
+export async function createAccount({
   fullName,
   email,
 }: {
   fullName: string;
   email: string;
-}) => {
+}) {
   const existingUser = await getUserByEmail(email);
 
   const accountId = await sendEmailOTP({ email });
@@ -75,15 +75,15 @@ export const createAccount = async ({
   }
 
   return parseStringify({ accountId });
-};
+}
 
-export const verifySecret = async ({
+export async function verifySecret({
   accountId,
   password,
 }: {
   accountId: string;
   password: string;
-}) => {
+}) {
   try {
     const { account } = await createAdminClient();
 
@@ -100,9 +100,9 @@ export const verifySecret = async ({
   } catch (error) {
     handleError(error, "Failed to verify OTP");
   }
-};
+}
 
-export const getCurrentUser = async () => {
+export async function getCurrentUser() {
   try {
     const { databases, account } = await createSessionClient();
 
@@ -120,9 +120,9 @@ export const getCurrentUser = async () => {
   } catch (error) {
     console.log(error);
   }
-};
+}
 
-export const signOutUser = async () => {
+export async function signOutUser() {
   const { account } = await createSessionClient();
 
   try {
@@ -133,9 +133,9 @@ export const signOutUser = async () => {
   } finally {
     redirect("/sign-in");
   }
-};
+}
 
-export const signInUser = async ({ email }: { email: string }) => {
+export async function signInUser({ email }: { email: string }) {
   try {
     const existingUser = await getUserByEmail(email);
 
@@ -149,4 +149,4 @@ export const signInUser = async ({ email }: { email: string }) => {
   } catch (error) {
     handleError(error, "Failed to sign in user");
   }
-};
+}
