@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import FileUploader from "@/components/FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
+import Search from "@/components/Search";
 
 export default function Header({
   userId,
@@ -20,7 +21,7 @@ export default function Header({
   }
   return (
     <header className="header">
-      search
+      <Search />
       <div className="header-wrapper">
         <FileUploader ownerId={userId} accountId={accountId} />
         <form action={handleSignOut}>
