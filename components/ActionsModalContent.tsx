@@ -42,11 +42,15 @@ export const FileDetails = ({ file }: { file: Models.Document }) => {
 
 interface Props {
   file: Models.Document;
-  onInputChange: React.Dispatch<React.SetStateAction<string[]>>;
-  onRemove: (email: string) => void;
+  onInputChangeAction: React.Dispatch<React.SetStateAction<string[]>>;
+  onRemoveAction: (email: string) => void;
 }
 
-export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
+export const ShareInput = ({
+  file,
+  onInputChangeAction,
+  onRemoveAction,
+}: Props) => {
   return (
     <>
       <ImageThumbnail file={file} />
@@ -58,7 +62,9 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
         <Input
           type="email"
           placeholder="Enter email address"
-          onChange={(e) => onInputChange(e.target.value.trim().split(","))}
+          onChange={(e) =>
+            onInputChangeAction(e.target.value.trim().split(","))
+          }
           className="share-input-field"
         />
         <div className="pt-4">
@@ -77,7 +83,7 @@ export const ShareInput = ({ file, onInputChange, onRemove }: Props) => {
               >
                 <p className="subtitle-2">{email}</p>
                 <Button
-                  onClick={() => onRemove(email)}
+                  onClick={() => onRemoveAction(email)}
                   className="share-remove-user"
                 >
                   <Image

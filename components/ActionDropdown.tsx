@@ -104,8 +104,8 @@ export default function ActionDropdown({ file }: { file: Models.Document }) {
           {value === "share" && (
             <ShareInput
               file={file}
-              onInputChange={setEmails}
-              onRemove={handleRemoveUser}
+              onInputChangeAction={setEmails}
+              onRemoveAction={handleRemoveUser}
             />
           )}
           {value === "delete" && (
@@ -199,7 +199,6 @@ export default function ActionDropdown({ file }: { file: Models.Document }) {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-
       {renderDialogContent()}
     </Dialog>
   );
