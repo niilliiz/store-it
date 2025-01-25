@@ -3,7 +3,13 @@ import Image from "next/image";
 import FileUploader from "@/components/FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
-export default function Header() {
+export default function Header({
+  userId,
+  accountId,
+}: {
+  userId: string;
+  accountId: string;
+}) {
   async function handleSignOut() {
     "use server";
     try {
@@ -16,7 +22,7 @@ export default function Header() {
     <header className="header">
       search
       <div className="header-wrapper">
-        <FileUploader />
+        <FileUploader ownerId={userId} accountId={accountId} />
         <form action={handleSignOut}>
           <Button type="submit" className="sign-out-button">
             <Image

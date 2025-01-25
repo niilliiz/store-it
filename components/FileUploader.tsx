@@ -9,6 +9,7 @@ import Image from "next/image";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Thumbnail from "@/components/Thumbnail";
 import { uploadFile } from "@/lib/actions/file.action";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   ownerId: string;
@@ -18,12 +19,11 @@ interface Props {
 
 export default function FileUploader({ ownerId, accountId, className }: Props) {
   const path = usePathname();
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      console.log("files", acceptedFiles);
       setFiles(acceptedFiles);
 
       const uploadPromises = acceptedFiles.map(async (file) => {
@@ -32,18 +32,17 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
             prevFiles.filter((f) => f.name !== file.name),
           );
 
-          // return toast({
-          //   description: (
-          //     <p className="body-2 text-white">
-          //       <span className="font-semibold">{file.name}</span> is too large.
-          //       Max file size is 50MB.
-          //     </p>
-          //   ),
-          //   className: "error-toast",
-          // });
+          return toast({
+            description: (
+              <p className="body-2 text-white">
+                <span className="font-semibold">{file.name}</span> is too large.
+                Max file size is 50MB.
+              </p>
+            ),
+            className: "error-toast",
+          });
         }
 
-        // todo: what is the difference between ownserId and acountId
         return uploadFile({ file, ownerId, accountId, path }).then(
           (uploadedFile) => {
             if (uploadedFile) {
@@ -62,10 +61,7 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  function handleRemoveFile(
-    e: MouseEvent<HTMLImageElement, MouseEvent>,
-    fileName: string,
-  ) {
+  function handleRemoveFile(e: MouseEvent<HTMLImageElement>, fileName: string) {
     e.stopPropagation();
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   }
@@ -111,13 +107,14 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
                     />
                   </div>
                 </div>
-
                 <Image
                   src="/assets/icons/remove.svg"
                   width={24}
                   height={24}
                   alt="Remove"
-                  onClick={(e) => handleRemoveFile(e, file.name)}
+                  onClick={(e: MouseEvent<HTMLImageElement>) =>
+                    handleRemoveFile(e, file.name)
+                  }
                 />
               </li>
             );

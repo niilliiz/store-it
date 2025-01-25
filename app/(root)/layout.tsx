@@ -4,6 +4,7 @@ import MobileNavigation from "@/components/MobileNavigation";
 import Header from "@/components/Header";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 export default async function RootLayout({
   children,
@@ -18,10 +19,11 @@ export default async function RootLayout({
     <main className="flex h-screen">
       <Sidebar {...currentUser} />
       <section className="flex h-ful flex-1 flex-col">
-        <MobileNavigation />
-        <Header />
+        <MobileNavigation {...currentUser} />
+        <Header userId={currentUser.$id} accountId={currentUser.accountId} />
         <div className="main-content">{children}</div>
       </section>
+      <Toaster />
     </main>
   );
 }
